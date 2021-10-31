@@ -35,6 +35,21 @@ async function run() {
             const tours = await cursor.toArray();
             res.send(tours);
         });
+        // GET Single Service
+        app.get('/tours/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log('getting specific service', id);
+            const query = { _id: ObjectId(id) };
+            const service = await toursCollection.findOne(query);
+            res.json(service);
+        });
+        // DELETE API
+        app.delete('/tours/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await toursCollection.deleteOne(query);
+            res.json(result);
+        })
     }
     finally {
         // await client.close();

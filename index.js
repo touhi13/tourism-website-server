@@ -61,6 +61,12 @@ async function run() {
             const result = await bookingCollection.insertOne(booking);
             res.json(result);
         })
+        // BOOKING GET  API
+        app.get('/bookings', async (req, res) => {
+            const cursor = bookingCollection.find({});
+            const bookings = await cursor.toArray();
+            res.send(bookings);
+        });
     }
     finally {
         // await client.close();

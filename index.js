@@ -21,6 +21,7 @@ async function run() {
         await client.connect();
         const database = client.db('tripo');
         const toursCollection = database.collection('tours');
+        const bookingCollection = database.collection('bookings');
         // POST API
         app.post('/tours', async (req, res) => {
             const service = req.body;
@@ -50,6 +51,14 @@ async function run() {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
             const result = await toursCollection.deleteOne(query);
+            res.json(result);
+        })
+        // booking post api
+        app.post('/bookings', async (req, res) => {
+            console.log("sjdksk")
+            const booking = req.body;
+            booking.createdAt = new Date();
+            const result = await bookingCollection.insertOne(booking);
             res.json(result);
         })
     }

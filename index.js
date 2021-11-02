@@ -65,8 +65,27 @@ async function run() {
         app.get('/bookings', async (req, res) => {
             const cursor = bookingCollection.find({});
             const bookings = await cursor.toArray();
+            console.log(bookings)
             res.send(bookings);
         });
+
+        app.post('/bookings/status', async (req, res) => {
+            const status = req.body;
+            console.log(status);
+            let result;
+            if (status.status === 0) {
+                 result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 1 } });
+            } else {
+                 result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 0 } });
+            }
+            console.log(result)
+
+            res.json(result);
+            // console.log(status);
+            // res.json(result);
+
+
+        })
     }
     finally {
         // await client.close();

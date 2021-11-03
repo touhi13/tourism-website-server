@@ -52,6 +52,26 @@ async function run() {
             const result = await toursCollection.deleteOne(query);
             res.json(result);
         })
+        //UPDATE API
+        app.put('/tours/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedTour = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = {
+                $set: {
+                    name: updatedTour.name,
+                    price: updatedTour.price,
+                    days: updatedTour.days,
+                    description: updatedTour.description,
+                    img: updatedTour.img,
+                    location: updatedTour.location
+                },
+            };
+            const result = await toursCollection.updateOne(filter, updateDoc, options)
+            console.log('updating', id)
+            res.json(result)
+        })
         // booking post api
         app.post('/bookings', async (req, res) => {
             console.log("sjdksk")
@@ -82,16 +102,16 @@ async function run() {
             console.log(status);
             let result;
             if (status.status === 0) {
-                 result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 1 } });
+                result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 1 } });
             } else {
-                 result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 0 } });
+                result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 0 } });
             }
             res.json(result);
         });
         app.post('/my-bookings', async (req, res) => {
             console.log("hyfghfgh")
             const userEmail = req.body.email;
-            const cursor = bookingCollection.find({email:userEmail});
+            const cursor = bookingCollection.find({ email: userEmail });
             const bookings = await cursor.toArray();
             res.send(bookings);
 

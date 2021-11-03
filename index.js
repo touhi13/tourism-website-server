@@ -26,7 +26,6 @@ async function run() {
         app.post('/tours', async (req, res) => {
             const service = req.body;
             console.log('hit the post api', service);
-
             const result = await toursCollection.insertOne(service);
             console.log(result);
             res.json(result)
@@ -68,7 +67,16 @@ async function run() {
             console.log(bookings)
             res.send(bookings);
         });
+        // BOOKING DELETE API
+        app.delete('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
 
+            console.log('deleting user with id ', result);
+
+            res.json(result);
+        })
         app.post('/bookings/status', async (req, res) => {
             const status = req.body;
             console.log(status);
@@ -78,14 +86,17 @@ async function run() {
             } else {
                  result = await bookingCollection.updateOne({ _id: ObjectId(status._id) }, { $set: { status: 0 } });
             }
-            console.log(result)
-
             res.json(result);
-            // console.log(status);
-            // res.json(result);
-
+        });
+        app.post('/my-bookings', async (req, res) => {
+            console.log("hyfghfgh")
+            const userEmail = req.body.email;
+            const cursor = bookingCollection.find({email:userEmail});
+            const bookings = await cursor.toArray();
+            res.send(bookings);
 
         })
+
     }
     finally {
         // await client.close();
